@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends AbstractController
 {
     /**
-     * @Route("/users", name="user_index" methods={"GET"})
+     * @Route("/users", name="user_index", methods={"GET"})
      */
     public function index(EntityManagerInterface $em): Response
     {
