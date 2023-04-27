@@ -42,7 +42,7 @@ class OrderController extends AbstractController
         ]);
     }
 
-    #[Route("/orders/{id}", name: "order_edit", requirements: ["id" => "\d"], methods: ["GET", "POST"])]
+    #[Route("/orders/{id}", name: "order_edit", methods: ["GET", "POST"])]
     public function edit(Request $request, EntityManagerInterface $entityManager, Order $order): Response
     {
         $form = $this->createForm(Order::class, $order);
@@ -60,13 +60,13 @@ class OrderController extends AbstractController
         ]);
     }
 
-    #[Route("/orders/{id}", name: "order_show", requirements: ["id"], methods: ["GET"])]
+    #[Route("/orders/{id}", name: "order_show", methods: ["GET"])]
     public function show(Request $request, Order $order): Response
     {
         return $this->render('order/show.html.twig', ['order' => $order]);
     }
 
-    #[Route("/orders/{id}", name: "order_delete", requirements: ["id"], methods: ["DELETE"])]
+    #[Route("/orders/{id}", name: "order_delete", methods: ["DELETE"])]
     public function delete(Request $request, EntityManagerInterface $entityManager, Order $order): Response
     {
         if ($this->isCsrfTokenValid('delete'.$order->getId(), $request->request->get('_token'))) {
