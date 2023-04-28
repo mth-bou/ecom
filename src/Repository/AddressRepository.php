@@ -14,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Address[]    findAll()
  * @method Address[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AddressRepository extends ServiceEntityRepository
+class AddressRepository extends ServiceEntityRepository implements AddressRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -30,6 +30,21 @@ class AddressRepository extends ServiceEntityRepository
         }
     }
 
+    public function edit(Address $address, array $fields, bool $flush = false): void
+    {
+        foreach ($fields as $fieldName => $fieldValue) {
+            $setter = 'set' . ucfirst($fieldName);
+            if (method_exists($address, $setter)) {
+                $address->$setter($fieldValue);
+            }
+        }
+        $this->getEntityManager()->persist($address);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     public function remove(Address $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -37,6 +52,16 @@ class AddressRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findById(int $id): ?Address
+    {
+        return $this->findOneBy(['id' => $id]);
+    }
+
+    public function findByIdAndUserId(int $id, int $userId): ?Address
+    {
+        return $this->findOneBy(['id' => $id, 'user_id' => $userId]);
     }
 
 //    /**

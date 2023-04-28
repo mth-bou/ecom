@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Order;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,29 +16,52 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Order[]    findAll()
  * @method Order[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class OrderRepository extends ServiceEntityRepository
+class OrderRepository extends ServiceEntityRepository implements OrderRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Order::class);
     }
 
-    public function add(Order $entity, bool $flush = false): void
+    public function save(Order $order, bool $flush = false): void
     {
-        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager()->persist($order);
 
         if ($flush) {
             $this->getEntityManager()->flush();
         }
     }
 
-    public function remove(Order $entity, bool $flush = false): void
+    public function remove(Order $order, bool $flush = false): void
     {
-        $this->getEntityManager()->remove($entity);
+        $this->getEntityManager()->remove($order);
 
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findByUser(int $userId): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.user = :user')
+            ->setParameter('user', $userId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findByIdAndUserId(int $id, int $userId): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.id = :id')
+            ->andWhere('o.user_id = :userId')
+            ->setParameter('id', $id)
+            ->setParameter('user_id', $userId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
 //    /**

@@ -30,7 +30,7 @@ services:
     App\Service\ProductService:
         class: App\Service\ProductService
         arguments:
-            - '@App\Repository\ProductRepository'
+            - '@ProductRepositoryOld'
         public:  true
 
     App\Controller\ProductController:
