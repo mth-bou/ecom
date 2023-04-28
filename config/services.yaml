@@ -22,7 +22,7 @@ services:
 
 #    App\Controller\ProductController:
 #        arguments:
-#            $productService: '@App\Service\ProductServiceInterface'
+#            $productService: '@App\Service\ProductService'
 #        tags: [ 'controller.service_arguments' ]
 #
 #        App\Service\ProductService:

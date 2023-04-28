@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,10 +12,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends AbstractController
 {
 
-    #[Route("/products", name:"product_index", methods: ["GET"])]
-    public function index(EntityManagerInterface $em): Response
+    private ProductService $productService;
+
+    public function __construct(ProductService $productService)
     {
-        $products = $em->getRepository(Product::class)->findAll();
+        $this->productService = $productService;
+    }
+
+    #[Route("/products", name:"product_index", methods: ["GET"])]
+    public function index(): Response
+    {
+        $products = $this->productService->getAllProducts();
 
         return $this->render('product/index.html.twig', [
             'products' => $products,
@@ -23,15 +30,15 @@ class ProductController extends AbstractController
     }
 
     #[Route("/products/new", name: "product_new", methods: ["GET", "POST"])]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request): Response
     {
         $product = new Product();
         $form = $this->createForm(Product::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($product);
-            $em->flush();
+            $this->productService->createProduct($product);
+            $this->addFlash('success', 'Produit créé avec succès');
 
             return $this->redirectToRoute('product_index');
         }
@@ -43,13 +50,14 @@ class ProductController extends AbstractController
     }
 
     #[Route("/products/{id}/edit", name: "product_edit", methods: ["GET", "POST"])]
-    public function edit(Request $request, Product $product, EntityManagerInterface $em, ): Response
+    public function edit(Request $request, Product $product): Response
     {
         $form = $this->createForm(Product::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
+            $this->productService->updateProduct($product);
+            $this->addFlash('success', 'Produit mis à jour avec succès');
 
             return $this->redirectToRoute('product_index');
         }
@@ -67,11 +75,11 @@ class ProductController extends AbstractController
     }
 
     #[Route("/products/{id}", name: "product_delete", methods: ["DELETE"])]
-    public function delete(Request $request, Product $product, EntityManagerInterface $em): Response
+    public function delete(Request $request, Product $product): Response
     {
         if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
-            $em->remove($product);
-            $em->flush();
+            $this->productService->deleteProduct($product);
+            $this->addFlash('success', 'Produit supprimé avec succès');
         }
 
         return $this->redirectToRoute('product_index');
