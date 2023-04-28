@@ -79,13 +79,13 @@ class OrderItemRepository extends ServiceEntityRepository implements OrderItemRe
     /**
      * @throws NonUniqueResultException
      */
-    public function findByIdAndUser(int $id, User $user): ?OrderItem
+    public function findByIdAndUser(int $id, int $userId): ?OrderItem
     {
         return $this->createQueryBuilder('oi')
             ->where('oi.id = :id')
-            ->andWhere('oi.user = :user')
+            ->andWhere('oi.user_id = :userId')
             ->setParameter('id', $id)
-            ->setParameter('user', $user)
+            ->setParameter('user_id', $userId)
             ->getQuery()
             ->getOneOrNullResult();
     }

@@ -20,24 +20,24 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    App\Repository\ProductRepository:
-        class: App\Repository\ProductRepository
-        factory: [ 'Doctrine\ORM\EntityManagerInterface', 'getRepository' ]
-        arguments:
-            - App\Entity\Product
-        public: true
-
-    App\Service\ProductService:
-        class: App\Service\ProductService
-        arguments:
-            - '@ProductRepositoryOld'
-        public:  true
-
-    App\Controller\ProductController:
-        class: App\Controller\ProductController
-        arguments:
-            - '@App\Service\ProductService'
-        public: true
+#    App\Controller\ProductController:
+#        arguments:
+#            $productService: '@App\Service\ProductServiceInterface'
+#        tags: [ 'controller.service_arguments' ]
+#
+#        App\Service\ProductService:
+#            arguments:
+#                $productRepository: '@App\Repository\ProductRepositoryInterface'
+#
+#        App\Repository\ProductRepository:
+#            class: App\Repository\ProductRepository
+#            arguments:
+#                $entityManager: '@Doctrine\ORM\EntityManagerInterface'
+#            tags: [ 'doctrine.repository_service' ]
+#
+#        App\Repository\ProductRepositoryInterface:
+#            class: App\Repository\ProductRepository
+#            tags: [ 'doctrine.repository_service' ]
 
 
 

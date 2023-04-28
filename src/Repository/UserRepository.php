@@ -70,7 +70,7 @@ class UserRepository extends ServiceEntityRepository implements UserRepositoryIn
     /**
      * @throws NonUniqueResultException
      */
-    public function findByLastname(string $lastname): ?User
+    public function findByLastname(string $lastname): array
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.lastname = :lastname')
