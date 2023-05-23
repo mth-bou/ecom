@@ -1,7 +1,23 @@
-
-index:
+home:
     path: /
-    controller: App\Controller\TestController::index
+    controller: App\Controller\HomeController::index
+    methods: GET
+
+product_index:
+    path: /products
+    controller: App\Controller\ProductController::index
+
+product_new:
+    path: /products/new
+    controller: App\Controller\ProductController::new
+
+product_edit:
+    path: /products/edit
+    controller: App\Controller\ProductController::edit
+
+product_show:
+    path: /products/{id}
+    controller: App\Controller\ProductController::show
 
 controllers:
     resource:

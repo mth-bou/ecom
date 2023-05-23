@@ -12,12 +12,16 @@
         "doctrine/doctrine-bundle": "^2.9",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.14",
+        "symfony/asset": "6.2",
         "symfony/console": "6.2",
         "symfony/dotenv": "6.2",
-        "symfony/flex": "^1.17|^2",
+        "symfony/flex": "^2.2",
         "symfony/framework-bundle": "6.2",
         "symfony/runtime": "6.2",
-        "symfony/yaml": "6.2"
+        "symfony/twig-bridge": "6.2",
+        "symfony/twig-bundle": "6.2",
+        "symfony/yaml": "6.2",
+        "twig/twig": "^3.6"
     },
     "config": {
         "platform": {
@@ -40,7 +44,6 @@
             "App\\Controller\\": "src/Controller/",
             "App\\Model\\": "src/Entity/",
             "App\\Service\\": "src/Service/",
-            "App\\View\\": "src/View/",
             "App\\Form\\": "src/Form/",
             "App\\Repository\\": "src/Repository/"
         }
