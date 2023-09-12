@@ -1,11 +1,10 @@
 # env files
-.env
 .env.local
-.env.dev
 .env.dev.local
-.env.prod
 .env.prod.local
 .env.local.php
+
+/migrations
 
 # User-specific stuff
 .idea
