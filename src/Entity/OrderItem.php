@@ -5,39 +5,28 @@ namespace App\Entity;
 use App\Repository\OrderItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=OrderItemRepository::class)
- */
+#[ORM\Entity(repositoryClass: OrderItemRepository::class)]
 class OrderItem
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Order::class, inversedBy="orderItems")
-     */
-    private $product;
+    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'orderItems')]
+    private ?Product $product;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Order::class, inversedBy="orderItems")
-     */
-    private $_order;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $quantity;
+    #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'orderItems')]
+    private ?Order $_order;
+    #[ORM\Column(type: 'integer')]
+    private ?int $quantity;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getProduct(): ?Order
+    public function getProduct(): Product
     {
         return $this->product;
     }

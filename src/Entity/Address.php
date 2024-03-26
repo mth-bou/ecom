@@ -5,41 +5,28 @@ namespace App\Entity;
 use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=AddressRepository::class)
- */
+
+#[ORM\Entity(repositoryClass: AddressRepository::class)]
 class Address
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="addresses")
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'addresses')]
     private ?User $user;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $address;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+     #[ORM\Column(type: 'string', length: 255)]
     private ?string $city;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $country;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $number;
 
     public function getId(): ?int
