@@ -1,5 +1,15 @@
-{% extends 'home/index.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block content %}
-    <p>Liste de commandes</p>
+{% block title %}Liste de commandes{% endblock %}
+
+{% block body %}
+    <h1>Liste de commandes</h1>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
 {% endblock %}
