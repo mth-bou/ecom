@@ -1,5 +1,16 @@
-{% extends 'home/index.html.twig' %}
+{# templates/product/index.html.twig #}
+{% extends 'base.html.twig' %}
 
-{% block content %}
-    <p>Liste de produits</p>
+{% block title %}Liste de produits{% endblock %}
+
+{% block body %}
+    <h1>Liste de produits</h1>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
 {% endblock %}

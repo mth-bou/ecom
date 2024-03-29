@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\OrderItem;
-use App\Entity\User;
+use App\Entity\User2;
 use App\Repository\OrderItemRepositoryInterface;
 
 class OrderItemService

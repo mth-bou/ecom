@@ -1,0 +1,21 @@
+{# templates/product/new.html.twig #}
+
+{% extends body %}
+
+{% block body %}
+    <div class="new-product">
+        {{ form_start(form) }}
+
+        {{ form_row(form.name) }}
+
+        {{ form_row(form.description) }}
+
+        {{ form_row(form.price) }}
+
+        {{ form_row(form.image) }}
+
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

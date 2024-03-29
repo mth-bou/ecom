@@ -45,9 +45,9 @@ class AddressRepository extends ServiceEntityRepository implements AddressReposi
         }
     }
 
-    public function remove(Address $entity, bool $flush = false): void
+    public function remove(Address $address, bool $flush = false): void
     {
-        $this->getEntityManager()->remove($entity);
+        $this->getEntityManager()->remove($address);
 
         if ($flush) {
             $this->getEntityManager()->flush();

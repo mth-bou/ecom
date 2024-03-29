@@ -175,3 +175,6 @@ fabric.properties
 /web/js/
 
 # End of https://www.toptal.com/developers/gitignore/api/symfony,phpstorm
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
