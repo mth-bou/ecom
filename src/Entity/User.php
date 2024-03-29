@@ -55,7 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $phone = null;
 
     #[ORM\OneToMany(targetEntity: Address::class, mappedBy: 'user')]
-    private ArrayCollection $addresses;
+    private Collection $addresses;
 
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
