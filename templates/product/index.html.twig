@@ -1,16 +1,31 @@
 {# templates/product/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste de produits{% endblock %}
+{% block title %}Liste des produits{% endblock %}
 
 {% block body %}
-    <h1>Liste de produits</h1>
-{% endblock %}
+    <div class="container">
+        <h1>Liste des produits</h1>
+        <div class="product-list">
+            <div class="row">
+                {% for product in products %}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img src="{{ asset('uploads/' ~ product.image) }}" alt="{{ product.name }}"
+                                 class="card-img-top">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">{{ product.description }}</p>
+                                <p><strong>Prix : {{ product.price }}€</strong></p>
+                                <a href="{{ path('order_index', { id: product.id }) }}" class="btn btn-primary">Ajouter
+                                    au
+                                    panier</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
-{% block stylesheets %}
-    {{ parent() }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
 {% endblock %}

@@ -28,6 +28,9 @@ class Product
     #[ORM\Column(type: 'float')]
     private ?float $price;
 
+    #[ORM\Column(type: 'integer', nullable: false)]
+    private int $quantity;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $image;
 
@@ -43,6 +46,7 @@ class Product
     public function __construct()
     {
         $this->orders = new ArrayCollection();
+        $this->quantity = 0;
     }
 
     public function getId(): ?int
@@ -145,6 +149,18 @@ class Product
         if ($this->orders->removeElement($order)) {
             $order->removeProduct($this);
         }
+
+        return $this;
+    }
+
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): static
+    {
+        $this->quantity = $quantity;
 
         return $this;
     }
