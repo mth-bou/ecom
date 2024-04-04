@@ -38,6 +38,9 @@ class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Gérer le téléchargement de l'image ici car "mapped" => false, puis :
+            // $product->setImage($cheminDeLimage);
+
             $this->productService->createProduct($product);
             $this->addFlash('success', 'Produit créé avec succès');
 

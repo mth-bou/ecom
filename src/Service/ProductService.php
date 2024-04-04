@@ -26,7 +26,7 @@ class ProductService
 
     public function createProduct(Product $product): void
     {
-        $this->productRepository->save($product);
+        $this->productRepository->save($product, true);
     }
 
     public function updateProduct(Product $product): void
@@ -36,6 +36,6 @@ class ProductService
 
     public function deleteProduct(Product $product): void
     {
-        $this->productRepository->remove($product);
+        $this->productRepository->remove($product, true);
     }
 }

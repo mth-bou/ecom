@@ -21,7 +21,7 @@ class Order
     private ?User $user;
 
     #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'orders')]
-    private ArrayCollection $products;
+    private Collection $products;
 
      #[ORM\Column(type: 'float')]
     private ?float $total;
@@ -36,7 +36,7 @@ class Order
     private ?\DateTimeImmutable $updatedAt;
 
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'product')]
-    private ArrayCollection $orderItems;
+    private Collection $orderItems;
 
     public function __construct()
     {

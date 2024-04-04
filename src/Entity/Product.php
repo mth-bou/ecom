@@ -14,7 +14,7 @@ class Product
 {
     #[ORM\Id, ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private ?int $id;
+    private int $id;
 
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -41,12 +41,14 @@ class Product
     private ?\DateTimeImmutable $updatedAt;
 
     #[ORM\ManyToMany(targetEntity: Order::class, mappedBy: 'products')]
-    private ArrayCollection $orders;
+    private Collection $orders;
 
     public function __construct()
     {
         $this->orders = new ArrayCollection();
         $this->quantity = 0;
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

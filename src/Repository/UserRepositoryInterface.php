@@ -9,6 +9,8 @@ interface UserRepositoryInterface
     public function save(User $user, bool $flush = false): void;
     public function remove(User $user, bool $flush = false): void;
     public function edit(User $user, array $fields): void;
+    public function findAll(): array;
+    public function findById(int $id): ?User;
     public function findByEmail(string $email): ?User;
     public function findByLastname(string $lastname): array;
     public function findByEmailAndPassword(string $email, string $password): ?User;

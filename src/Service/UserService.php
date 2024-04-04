@@ -2,14 +2,14 @@
 
 namespace App\Service;
 
-use App\Repository\UserRepositoryInterface2;
-use App\Entity\User2;
+use App\Repository\UserRepositoryInterface;
+use App\Entity\User;
 
 class UserService
 {
-    private UserRepositoryInterface2 $userRepository;
+    private UserRepositoryInterface $userRepository;
 
-    public function __construct(UserRepositoryInterface2 $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
     }
@@ -19,22 +19,27 @@ class UserService
         return $this->userRepository->findAll();
     }
 
-    public function getProductById(int $id): ?User2
+    public function getUserById(int $id): ?User
     {
-        return $this->userRepository->find($id);
+        return $this->userRepository->findById($id);
     }
 
-    public function createProduct(User2 $user): void
+    public function getUserByEmail(string $email): ?User
+    {
+        return $this->userRepository->findByEmail($email);
+    }
+
+    public function createUser(User $user): void
     {
         $this->userRepository->save($user);
     }
 
-    public function updateProduct(User2 $user): void
+    public function updateUser(User $user): void
     {
         $this->userRepository->save($user);
     }
 
-    public function deleteProduct(User2 $user): void
+    public function deleteUser(User $user): void
     {
         $this->userRepository->remove($user);
     }
