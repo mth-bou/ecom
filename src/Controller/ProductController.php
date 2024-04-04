@@ -43,24 +43,10 @@ class ProductController extends AbstractController
             // Gérer le téléchargement de l'image ici car "mapped" => false, puis :
             // $product->setImage($cheminDeLimage);
 
-            $slugger = new AsciiSlugger();
             $imageFile = $form['image']->getData();
 
             if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                //$safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename. '-' . uniqid('', true) . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('images_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    throw new FileException($e->getMessage());
-                }
-
+                $newFilename = $this->handleImageUpload($imageFile);
                 $product->setImage($newFilename);
             }
 
@@ -74,6 +60,25 @@ class ProductController extends AbstractController
             'product' => $product,
             'form' => $form->createView(),
         ]);
+    }
+
+    private function handleImageUpload($imageFile): string
+    {
+        $slugger = new AsciiSlugger();
+        $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+        $safeFilename = $slugger->slug($originalFilename);
+        $newFilename = $safeFilename. '-' . uniqid('', true) . '.' . $imageFile->guessExtension();
+
+        try {
+            $imageFile->move(
+                $this->getParameter('images_directory'),
+                $newFilename
+            );
+        } catch (FileException $e) {
+            throw new FileException($e->getMessage());
+        }
+
+        return $newFilename;
     }
 
     #[Route("/products/{id}/edit", name: "product_edit", methods: ["GET", "POST"])]
