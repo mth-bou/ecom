@@ -6,9 +6,11 @@ use App\Entity\Product;
 use App\Form\ProductType;
 use App\Service\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 class ProductController extends AbstractController
 {
@@ -40,6 +42,27 @@ class ProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Gérer le téléchargement de l'image ici car "mapped" => false, puis :
             // $product->setImage($cheminDeLimage);
+
+            $slugger = new AsciiSlugger();
+            $imageFile = $form['image']->getData();
+
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                //$safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename. '-' . uniqid('', true) . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    throw new FileException($e->getMessage());
+                }
+
+                $product->setImage($newFilename);
+            }
 
             $this->productService->createProduct($product);
             $this->addFlash('success', 'Produit créé avec succès');
@@ -81,7 +104,7 @@ class ProductController extends AbstractController
     #[Route("/products/{id}", name: "product_delete", methods: ["DELETE"])]
     public function delete(Request $request, Product $product): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $product->getId(), $request->request->get('_token'))) {
             $this->productService->deleteProduct($product);
             $this->addFlash('success', 'Produit supprimé avec succès');
         }

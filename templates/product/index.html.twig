@@ -11,8 +11,10 @@
                 {% for product in products %}
                     <div class="col-md-4">
                         <div class="card">
-                            <img src="{{ asset('uploads/' ~ product.image) }}" alt="{{ product.name }}"
-                                 class="card-img-top">
+                            <img src="{{ asset('uploads/images/' ~ product.image|default('default-product-image.png')) }}"
+                                 alt="{{ product.name }}"
+                                 class="card-img-top product-image"
+                            >
                             <div class="card-body">
                                 <h5 class="card-title">{{ product.name }}</h5>
                                 <p class="card-text">{{ product.description }}</p>
