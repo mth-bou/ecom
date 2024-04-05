@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Entity\ProductCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -21,22 +22,28 @@ class ProductRepository extends ServiceEntityRepository implements ProductReposi
         parent::__construct($registry, Product::class);
     }
 
-    public function save(Product $product, bool $flush = false): void
+    public function save(Product $product): void
     {
         $this->getEntityManager()->persist($product);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        $this->getEntityManager()->flush();
     }
 
-    public function remove(Product $product, bool $flush = false): void
+    public function remove(Product $product): void
     {
         $this->getEntityManager()->remove($product);
+        $this->getEntityManager()->flush();
+    }
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
+    public function edit(Product $product, array $fields): void
+    {
+        foreach ($fields as $field => $value) {
+            $setter = 'set' . ucfirst($field);
+            if (method_exists($product, $setter)) {
+                $product->$setter($value);
+            }
         }
+
+        $this->save($product);
     }
 
     public function findAllOrderedByName(): array
@@ -58,28 +65,32 @@ class ProductRepository extends ServiceEntityRepository implements ProductReposi
             ->getResult();
     }
 
-//    /**
-//     * @return Product[] Returns an array of Product objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findByName(string $name): ?Product
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.name = :name')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
-//    public function findOneBySomeField($value): ?Product
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findByCategory(ProductCategory $category): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.category = :category')
+            ->setParameter('category', $category)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByIdAndCategory(int $id, ProductCategory $category): ?Product
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.id = :id')
+            ->andWhere('p.category = :category')
+            ->setParameter('id', $id)
+            ->setParameter('category', $category)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

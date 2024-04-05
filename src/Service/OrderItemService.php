@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\OrderItem;
+use App\Entity\User;
 use App\Entity\User2;
 use App\Repository\OrderItemRepositoryInterface;
 
@@ -50,9 +51,9 @@ class OrderItemService
         return $this->orderItemRepository->find($productId);
     }
 
-    public function getByIdAndUser(int $id, int $userId): ?OrderItem
+    public function getByIdAndUser(int $id, User $user): ?OrderItem
     {
-        return $this->orderItemRepository->findByIdAndUser($id, $userId);
+        return $this->orderItemRepository->findByIdAndUser($id, $user);
     }
 
 }
