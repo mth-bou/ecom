@@ -113,6 +113,12 @@ class ProductController extends AbstractController
     #[Route("/products/{id}", name: "product_show", methods: ["GET"])]
     public function show(Product $product): Response
     {
+        /*$product = $this->productService->getProductById($id);
+
+        if (!$product) {
+            throw $this->createNotFoundException("Produit non trouvé");
+        }*/
+
         return $this->render('product/show.html.twig', ['product' => $product]);
     }
 

@@ -6,16 +6,16 @@
 {% block body %}
     <div class="container">
         <h1>Liste des produits</h1>
-        <div class="product-list">
+        <div class="product-list my-5">
             <div class="row">
                 {% for product in products %}
                     <div class="col-md-4">
-                        <div class="card">
+                        <div class="card bg-transparent border-0">
                             <img src="{{ asset('uploads/images/' ~ product.image|default('default-product-image.png')) }}"
                                  alt="{{ product.name }}"
-                                 class="card-img-top product-image"
+                                 class="card-img-top product-image rounded-3 bg-light"
                             >
-                            <div class="card-body">
+                            <div class="card-body text-center">
                                 <h5 class="card-title">{{ product.name }}</h5>
                                 {% set maxLength = 60 %}
                                 {% set description = product.description|length > maxLength ? product.description|slice(0, maxLength) ~ '...' : product.description %}
