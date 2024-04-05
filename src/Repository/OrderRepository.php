@@ -23,29 +23,23 @@ class OrderRepository extends ServiceEntityRepository implements OrderRepository
         parent::__construct($registry, Order::class);
     }
 
-    public function save(Order $order, bool $flush = false): void
+    public function save(Order $order): void
     {
         $this->getEntityManager()->persist($order);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        $this->getEntityManager()->flush();
     }
 
-    public function remove(Order $order, bool $flush = false): void
+    public function remove(Order $order): void
     {
         $this->getEntityManager()->remove($order);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        $this->getEntityManager()->flush();
     }
 
-    public function findByUser(int $userId): array
+    public function findByUser(User $user): array
     {
         return $this->createQueryBuilder('o')
             ->andWhere('o.user = :user')
-            ->setParameter('user', $userId)
+            ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
     }
@@ -53,39 +47,15 @@ class OrderRepository extends ServiceEntityRepository implements OrderRepository
     /**
      * @throws NonUniqueResultException
      */
-    public function findByIdAndUserId(int $id, int $userId): array
+    public function findByIdAndUser(int $id, User $user): ?Order
     {
         return $this->createQueryBuilder('o')
             ->andWhere('o.id = :id')
-            ->andWhere('o.user_id = :userId')
+            ->andWhere('o.user = :user')
             ->setParameter('id', $id)
-            ->setParameter('user_id', $userId)
+            ->setParameter('user', $user)
             ->getQuery()
             ->getOneOrNullResult();
     }
 
-//    /**
-//     * @return Order[] Returns an array of Order objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('o.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Order
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

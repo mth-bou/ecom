@@ -9,6 +9,6 @@ interface OrderRepositoryInterface
 {
     public function save(Order $order): void;
     public function remove(Order $order): void;
-    public function findByUser(int $userId): array;
-    public function findByIdAndUserId(int $id, int $userId): array;
+    public function findByUser(User $user): array;
+    public function findByIdAndUser(int $id, User $user): ?Order;
 }
