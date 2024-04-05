@@ -24,16 +24,13 @@ class OrderItemRepository extends ServiceEntityRepository implements OrderItemRe
         parent::__construct($registry, OrderItem::class);
     }
 
-    public function save(OrderItem $orderItem, bool $flush = false): void
+    public function save(OrderItem $orderItem): void
     {
         $this->getEntityManager()->persist($orderItem);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        $this->getEntityManager()->flush();
     }
 
-    public function edit(OrderItem $orderItem, ?array $fields, bool $flush = false): void
+    public function edit(OrderItem $orderItem, ?array $fields): void
     {
         foreach ($fields as $fieldName => $fieldValue) {
             $setter = 'set' . ucfirst($fieldName);
@@ -41,20 +38,13 @@ class OrderItemRepository extends ServiceEntityRepository implements OrderItemRe
                 $orderItem->$setter($fieldValue);
             }
         }
-        $this->getEntityManager()->persist($orderItem);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        $this->save($orderItem);
     }
 
-    public function remove(OrderItem $orderItem, bool $flush = false): void
+    public function remove(OrderItem $orderItem): void
     {
         $this->getEntityManager()->remove($orderItem);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        $this->getEntityManager()->flush();
     }
 
     public function findByUser(User $user): array
@@ -78,39 +68,15 @@ class OrderItemRepository extends ServiceEntityRepository implements OrderItemRe
     /**
      * @throws NonUniqueResultException
      */
-    public function findByIdAndUser(int $id, int $userId): ?OrderItem
+    public function findByIdAndUser(int $id, User $user): ?OrderItem
     {
         return $this->createQueryBuilder('oi')
             ->where('oi.id = :id')
-            ->andWhere('oi.user_id = :userId')
+            ->andWhere('oi.user = :user')
             ->setParameter('id', $id)
-            ->setParameter('user_id', $userId)
+            ->setParameter('user', $user)
             ->getQuery()
             ->getOneOrNullResult();
     }
 
-//    /**
-//     * @return OrderItem[] Returns an array of OrderItem objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('o.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?OrderItem
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }
