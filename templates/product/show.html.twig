@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <img src="{{ asset('uploads/images/' ~ product.image|default('default-product-image.png')) }}"
+                     alt="{{ product.name }}"
+                     class="img-fluid"
+                >
+            </div>
+            <div class="col-md-6">
+                <h1>{{ product.name }}</h1>
+                <p class="text-muted">{{ product.category }}</p>
+                <p>{{ product.description }}</p>
+                <p>{{ product.price }} €</p>
+                <a href="{{ path('order_index', {id: product.id}) }}" class="btn btn-primary">Add to cart</a>
+            </div>
+        </div>
+        <div class="row my-5">
+            <div class="col-md-12">
+                <table class="table table-hover">
+                    <tbody>
+                    <thead>
+                        <tr>
+                            <th scope="col">Caractéristiques</th>
+                            <th scope="col">Valeurs</th>
+                        </tr>
+                    </thead>
+                        <tr>
+                            <th scope="row">Marque</th>
+                            <td>Brand</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Catégorie</th>
+                            <td>{{ product.category }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
