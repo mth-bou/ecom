@@ -3,8 +3,8 @@
 namespace App\Service;
 
 use App\Entity\OrderItem;
+use App\Entity\Product;
 use App\Entity\User;
-use App\Entity\User2;
 use App\Repository\OrderItemRepositoryInterface;
 
 class OrderItemService
@@ -31,9 +31,9 @@ class OrderItemService
         $this->orderItemRepository->save($orderItem);
     }
 
-    public function updateOrderItem(OrderItem $orderItem): void
+    public function updateOrderItem(OrderItem $orderItem, ?array $fields): void
     {
-        $this->orderItemRepository->save($orderItem);
+        $this->orderItemRepository->edit($orderItem, $fields);
     }
 
     public function deleteOrderItem(OrderItem $orderItem): void
@@ -41,17 +41,17 @@ class OrderItemService
         $this->orderItemRepository->remove($orderItem);
     }
 
-    public function getByUser(int $userId): array
+    public function getOrderItemsByUser(User $user): array
     {
-        return $this->orderItemRepository->find($userId);
+        return $this->orderItemRepository->findByUser($user);
     }
 
-    public function getByProduct(int $productId): array
+    public function getOrderItemsByProduct(Product $product): array
     {
-        return $this->orderItemRepository->find($productId);
+        return $this->orderItemRepository->findByProduct($product);
     }
 
-    public function getByIdAndUser(int $id, User $user): ?OrderItem
+    public function getOrderItemByIdAndUser(int $id, User $user): ?OrderItem
     {
         return $this->orderItemRepository->findByIdAndUser($id, $user);
     }

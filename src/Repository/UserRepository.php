@@ -50,7 +50,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-    public function edit(User $user, $fields): void
+    public function edit(User $user, ?array $fields): void
     {
         foreach ($fields as $fieldName => $value) {
             $setter = 'set' . ucfirst($fieldName);

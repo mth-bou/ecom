@@ -21,7 +21,7 @@ class UserService
 
     public function getUserById(int $id): ?User
     {
-        return $this->userRepository->findById($id);
+        return $this->userRepository->find($id);
     }
 
     public function getUserByEmail(string $email): ?User
@@ -29,14 +29,19 @@ class UserService
         return $this->userRepository->findByEmail($email);
     }
 
+    public function getUsersByFirstnameAndLastname(string $firstname, string $lastname): array
+    {
+        return $this->userRepository->findByFirstnameAndLastname($firstname, $lastname);
+    }
+
     public function createUser(User $user): void
     {
         $this->userRepository->save($user);
     }
 
-    public function updateUser(User $user): void
+    public function updateUser(User $user, ?array $fields): void
     {
-        $this->userRepository->save($user);
+        $this->userRepository->edit($user, $fields);
     }
 
     public function deleteUser(User $user): void

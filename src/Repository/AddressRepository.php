@@ -28,7 +28,7 @@ class AddressRepository extends ServiceEntityRepository implements AddressReposi
         $this->getEntityManager()->flush();
     }
 
-    public function edit(Address $address, array $fields): void
+    public function edit(Address $address, ?array $fields): void
     {
         foreach ($fields as $fieldName => $fieldValue) {
             $setter = 'set' . ucfirst($fieldName);
@@ -43,15 +43,6 @@ class AddressRepository extends ServiceEntityRepository implements AddressReposi
     {
         $this->getEntityManager()->remove($address);
         $this->getEntityManager()->flush();
-    }
-
-    public function findById(int $id): ?Address
-    {
-        return $this->createQueryBuilder('a')
-            ->where('a.id = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getOneOrNullResult();
     }
 
     public function findByIdAndUser(int $id, User $user): ?Address

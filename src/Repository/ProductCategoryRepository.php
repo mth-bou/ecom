@@ -33,7 +33,7 @@ class ProductCategoryRepository extends ServiceEntityRepository implements Produ
         $this->getEntityManager()->flush();
     }
 
-    public function edit(ProductCategory $productCategory, array $fields): void
+    public function edit(ProductCategory $productCategory, ?array $fields): void
     {
         foreach ($fields as $fieldName => $fieldValue) {
             $setter = 'set' . ucfirst($fieldName);

@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Address;
+use App\Entity\User;
 use App\Repository\AddressRepositoryInterface;
 
 class AddressService
@@ -14,7 +15,7 @@ class AddressService
         $this->addressRepository = $addressRepository;
     }
 
-    public function getAllAddress(): array
+    public function getAllAddresses(): array
     {
         return $this->addressRepository->findAll();
     }
@@ -24,14 +25,19 @@ class AddressService
         return $this->addressRepository->find($id);
     }
 
+    public function getAddressByIdAndUser(int $id, User $user): ?Address
+    {
+        return $this->addressRepository->findByIdAndUser($id, $user);
+    }
+
     public function createAddress(Address $address): void
     {
         $this->addressRepository->save($address);
     }
 
-    public function updateAddress(Address $address): void
+    public function updateAddress(Address $address, ?array $fields): void
     {
-        $this->addressRepository->save($address);
+        $this->addressRepository->edit($address, $fields);
     }
 
     public function deleteAddress(Address $address): void

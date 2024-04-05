@@ -34,7 +34,7 @@ class ProductRepository extends ServiceEntityRepository implements ProductReposi
         $this->getEntityManager()->flush();
     }
 
-    public function edit(Product $product, array $fields): void
+    public function edit(Product $product, ?array $fields): void
     {
         foreach ($fields as $field => $value) {
             $setter = 'set' . ucfirst($field);
@@ -65,7 +65,7 @@ class ProductRepository extends ServiceEntityRepository implements ProductReposi
             ->getResult();
     }
 
-    public function findByName(string $name): ?Product
+    public function findByName(string $name): array
     {
         return $this->createQueryBuilder('p')
             ->where('p.name = :name')

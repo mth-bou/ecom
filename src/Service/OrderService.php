@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Order;
+use App\Entity\User;
 use App\Repository\OrderRepositoryInterface;
 
 class OrderService
@@ -29,13 +30,23 @@ class OrderService
         $this->orderRepository->save($order);
     }
 
-    public function updateOrder(Order $order): void
+    /*public function updateOrder(Order $order): void
     {
         $this->orderRepository->save($order);
-    }
+    }*/
 
     public function deleteOrder(Order $order): void
     {
         $this->orderRepository->remove($order);
+    }
+
+    public function getOrdersByUser(User $user): array
+    {
+        return $this->orderRepository->findByUser($user);
+    }
+
+    public function getOrderByIdAndUser(int $id, User $user): ?Order
+    {
+        return $this->orderRepository->findByIdAndUser($id, $user);
     }
 }
