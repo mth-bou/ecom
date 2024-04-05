@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Address;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -21,16 +22,13 @@ class AddressRepository extends ServiceEntityRepository implements AddressReposi
         parent::__construct($registry, Address::class);
     }
 
-    public function save(Address $address, bool $flush = false): void
+    public function save(Address $address): void
     {
         $this->getEntityManager()->persist($address);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        $this->getEntityManager()->flush();
     }
 
-    public function edit(Address $address, array $fields, bool $flush = false): void
+    public function edit(Address $address, array $fields): void
     {
         foreach ($fields as $fieldName => $fieldValue) {
             $setter = 'set' . ucfirst($fieldName);
@@ -38,54 +36,33 @@ class AddressRepository extends ServiceEntityRepository implements AddressReposi
                 $address->$setter($fieldValue);
             }
         }
-        $this->getEntityManager()->persist($address);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        $this->save($address);
     }
 
-    public function remove(Address $address, bool $flush = false): void
+    public function remove(Address $address): void
     {
         $this->getEntityManager()->remove($address);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        $this->getEntityManager()->flush();
     }
 
     public function findById(int $id): ?Address
     {
-        return $this->findOneBy(['id' => $id]);
+        return $this->createQueryBuilder('a')
+            ->where('a.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
-    public function findByIdAndUserId(int $id, int $userId): ?Address
+    public function findByIdAndUser(int $id, User $user): ?Address
     {
-        return $this->findOneBy(['id' => $id, 'user_id' => $userId]);
+        return $this->createQueryBuilder('a')
+            ->where('a.id = :id')
+            ->andWhere('a.user = :user')
+            ->setParameter('id', $id)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
-//    /**
-//     * @return Address[] Returns an array of Address objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Address
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }
