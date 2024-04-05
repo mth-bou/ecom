@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Entity\Product;
 use App\Entity\User;
@@ -49,9 +48,9 @@ class OrderItemRepository extends ServiceEntityRepository implements OrderItemRe
         }
     }
 
-    public function remove(OrderItem $entity, bool $flush = false): void
+    public function remove(OrderItem $orderItem, bool $flush = false): void
     {
-        $this->getEntityManager()->remove($entity);
+        $this->getEntityManager()->remove($orderItem);
 
         if ($flush) {
             $this->getEntityManager()->flush();
