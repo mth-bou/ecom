@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Cart;
 use App\Entity\CartItem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,35 +15,55 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method CartItem[]    findAll()
  * @method CartItem[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CartItemRepository extends ServiceEntityRepository
+class CartItemRepository extends ServiceEntityRepository implements CartItemRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, CartItem::class);
     }
 
-//    /**
-//     * @return CartItem[] Returns an array of CartItem objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function save(CartItem $cartItem): void
+    {
+        $this->getEntityManager()->persist($cartItem);
+        $this->getEntityManager()->flush();
+    }
 
-//    public function findOneBySomeField($value): ?CartItem
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function remove(CartItem $cartItem): void
+    {
+        $this->getEntityManager()->remove($cartItem);
+        $this->getEntityManager()->flush();
+    }
+
+    public function edit(CartItem $cartItem, ?array $fields): void
+    {
+        foreach ($fields as $field => $value) {
+            $method = sprintf('set%s', ucfirst($field));
+            if (method_exists($cartItem, $method)) {
+                $cartItem->$method($value);
+            }
+        }
+        $this->save($cartItem);
+    }
+
+    public function findByCart(Cart $cart): array
+    {
+        return $this->createQueryBuilder('ci')
+            ->where('ci.cart = :cart')
+            ->setParameter('cart', $cart)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByIdAndCart(int $id, Cart $cart): ?CartItem
+    {
+        return $this->createQueryBuilder('ci')
+            ->where('ci.id = :id')
+            ->andWhere('ci.cart = :cart')
+            ->setParameter('id', $id)
+            ->setParameter('cart', $cart)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+
 }
