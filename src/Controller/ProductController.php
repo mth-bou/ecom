@@ -84,11 +84,21 @@ class ProductController extends AbstractController
     #[Route("/products/{id}/edit", name: "product_edit", methods: ["GET", "POST"])]
     public function edit(Request $request, Product $product): Response
     {
-        $form = $this->createForm(Product::class, $product);
+        $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->productService->updateProduct($product);
+
+            $imageFile = $form['image']->getData();
+
+            if ($imageFile) {
+                $newFilename = $this->handleImageUpload($imageFile);
+                $product->setImage($newFilename);
+            }
+
+            $data = $form->getData();
+
+            $this->productService->updateProduct($product, $data);
             $this->addFlash('success', 'Produit mis à jour avec succès');
 
             return $this->redirectToRoute('product_index');

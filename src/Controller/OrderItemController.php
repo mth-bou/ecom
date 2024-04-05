@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\OrderItem;
+use App\Form\OrderItemType;
+use App\Service\OrderItemService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,10 +13,16 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class OrderItemController extends AbstractController
 {
+    private OrderItemService $orderItemService;
+
+    public function __construct(OrderItemService $orderItemService) {
+        $this->orderItemService = $orderItemService;
+    }
+
     #[Route('/order-items', name: 'order_item_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(): Response
     {
-        $orderItems = $entityManager->getRepository(OrderItem::class)->findAll();
+        $orderItems = $this->orderItemService->getAllOrderItems();
 
         return $this->render('order_item/index.html.twig', [
             'order_items' => $orderItems,
@@ -22,15 +30,14 @@ class OrderItemController extends AbstractController
     }
 
     #[Route('/order-items/new', name: 'order_item_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request): Response
     {
         $orderItem = new OrderItem();
-        $form = $this->createForm(OrderItem::class, $orderItem);
+        $form = $this->createForm(OrderItemType::class, $orderItem);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($orderItem);
-            $entityManager->flush();
+            $this->orderItemService->createOrderItem($orderItem);
 
             return $this->redirectToRoute('order_item_index');
         }
@@ -50,13 +57,14 @@ class OrderItemController extends AbstractController
     }
 
     #[Route('/order-items/{id}/edit', name: 'order_item_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, OrderItem $orderItem, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, OrderItem $orderItem): Response
     {
-        $form = $this->createForm(OrderItem::class, $orderItem);
+        $form = $this->createForm(OrderItemType::class, $orderItem);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $data = $form->getData();
+            $this->orderItemService->updateOrderItem($orderItem, $data);
 
             return $this->redirectToRoute('order_item_index');
         }
