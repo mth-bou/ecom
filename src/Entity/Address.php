@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AddressRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -15,6 +17,7 @@ class Address
     private $id;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'addresses')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $user;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -28,6 +31,18 @@ class Address
 
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $number;
+
+    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'shippingAddress')]
+    private Collection $ordersShippingAddress;
+
+    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'billingAddress')]
+    private Collection $ordersBillingAddress;
+
+    public function __construct()
+    {
+        $this->ordersShippingAddress = new ArrayCollection();
+        $this->ordersBillingAddress = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -90,6 +105,66 @@ class Address
     public function setNumber(string $number): self
     {
         $this->number = $number;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Order>
+     */
+    public function getOrdersShippingAddress(): Collection
+    {
+        return $this->ordersShippingAddress;
+    }
+
+    public function addOrdersShippingAddress(Order $ordersShippingAddress): static
+    {
+        if (!$this->ordersShippingAddress->contains($ordersShippingAddress)) {
+            $this->ordersShippingAddress->add($ordersShippingAddress);
+            $ordersShippingAddress->setShippingAddress($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrdersShippingAddress(Order $ordersShippingAddress): static
+    {
+        if ($this->ordersShippingAddress->removeElement($ordersShippingAddress)) {
+            // set the owning side to null (unless already changed)
+            if ($ordersShippingAddress->getShippingAddress() === $this) {
+                $ordersShippingAddress->setShippingAddress(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Order>
+     */
+    public function getOrdersBillingAddress(): Collection
+    {
+        return $this->ordersBillingAddress;
+    }
+
+    public function addOrdersBillingAddress(Order $ordersBillingAddress): static
+    {
+        if (!$this->ordersBillingAddress->contains($ordersBillingAddress)) {
+            $this->ordersBillingAddress->add($ordersBillingAddress);
+            $ordersBillingAddress->setBillingAddress($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrdersBillingAddress(Order $ordersBillingAddress): static
+    {
+        if ($this->ordersBillingAddress->removeElement($ordersBillingAddress)) {
+            // set the owning side to null (unless already changed)
+            if ($ordersBillingAddress->getBillingAddress() === $this) {
+                $ordersBillingAddress->setBillingAddress(null);
+            }
+        }
 
         return $this;
     }

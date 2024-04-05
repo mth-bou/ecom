@@ -13,41 +13,24 @@ class OrderItem
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'orderItems')]
-    private ?Product $product;
-
-    #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'orderItems')]
-    private ?Order $_order;
     #[ORM\Column(type: 'integer')]
     private ?int $quantity;
+
+    #[ORM\Column]
+    private ?float $Subtotal = null;
+
+    #[ORM\ManyToOne(inversedBy: 'orderItems')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Order $order = null;
+
+    #[ORM\ManyToOne(inversedBy: 'orderItems')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Product $product = null;
+
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getProduct(): Product
-    {
-        return $this->product;
-    }
-
-    public function setProduct(?Order $product): self
-    {
-        $this->product = $product;
-
-        return $this;
-    }
-
-    public function getOrder(): ?Order
-    {
-        return $this->_order;
-    }
-
-    public function setOrder(?Order $_order): self
-    {
-        $this->_order = $_order;
-
-        return $this;
     }
 
     public function getQuantity(): ?int
@@ -58,6 +41,42 @@ class OrderItem
     public function setQuantity(int $quantity): self
     {
         $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    public function getOrder(): ?Order
+    {
+        return $this->order;
+    }
+
+    public function setOrder(?Order $order): static
+    {
+        $this->order = $order;
+
+        return $this;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): static
+    {
+        $this->product = $product;
+
+        return $this;
+    }
+
+    public function getSubtotal(): ?float
+    {
+        return $this->Subtotal;
+    }
+
+    public function setSubtotal(float $Subtotal): static
+    {
+        $this->Subtotal = $Subtotal;
 
         return $this;
     }

@@ -17,17 +17,24 @@ class Order
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'products')]
-    private ?User $user;
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
-    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'orders')]
-    private Collection $products;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $paymentMethod = null;
 
-     #[ORM\Column(type: 'float')]
-    private ?float $total;
+    #[ORM\ManyToOne(inversedBy: 'ordersShippingAddress')]
+    private ?Address $shippingAddress = null;
 
-     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $status;
+    #[ORM\ManyToOne(inversedBy: 'ordersBillingAddress')]
+    private ?Address $billingAddress = null;
+
+    #[ORM\Column(type: 'string', length: 50, nullable: false, options: ['default' => 'pending'])]
+    private ?string $orderStatus = null;
+
+    #[ORM\Column(type: 'float', nullable: false, options: ['default' => 0.0])]
+    private ?float $totalCost = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $createdAt;
@@ -35,78 +42,17 @@ class Order
     #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $updatedAt;
 
-    #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'product')]
+    #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'order', orphanRemoval: true)]
     private Collection $orderItems;
 
     public function __construct()
     {
-        $this->products = new ArrayCollection();
         $this->orderItems = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Product>
-     */
-    public function getProducts(): Collection
-    {
-        return $this->products;
-    }
-
-    public function addProduct(Product $product): self
-    {
-        if (!$this->products->contains($product)) {
-            $this->products[] = $product;
-        }
-
-        return $this;
-    }
-
-    public function removeProduct(Product $product): self
-    {
-        $this->products->removeElement($product);
-
-        return $this;
-    }
-
-    public function getTotal(): ?float
-    {
-        return $this->total;
-    }
-
-    public function setTotal(float $total): self
-    {
-        $this->total = $total;
-
-        return $this;
-    }
-
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(string $status): self
-    {
-        $this->status = $status;
-
-        return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
@@ -133,6 +79,78 @@ class Order
         return $this;
     }
 
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getPaymentMethod(): ?string
+    {
+        return $this->paymentMethod;
+    }
+
+    public function setPaymentMethod(?string $paymentMethod): static
+    {
+        $this->paymentMethod = $paymentMethod;
+
+        return $this;
+    }
+
+    public function getShippingAddress(): ?Address
+    {
+        return $this->shippingAddress;
+    }
+
+    public function setShippingAddress(?Address $shippingAddress): static
+    {
+        $this->shippingAddress = $shippingAddress;
+
+        return $this;
+    }
+
+    public function getBillingAddress(): ?Address
+    {
+        return $this->billingAddress;
+    }
+
+    public function setBillingAddress(?Address $billingAddress): static
+    {
+        $this->billingAddress = $billingAddress;
+
+        return $this;
+    }
+
+    public function getOrderStatus(): ?string
+    {
+        return $this->orderStatus;
+    }
+
+    public function setOrderStatus(string $orderStatus): static
+    {
+        $this->orderStatus = $orderStatus;
+
+        return $this;
+    }
+
+    public function getTotalCost(): ?float
+    {
+        return $this->totalCost;
+    }
+
+    public function setTotalCost(float $totalCost): static
+    {
+        $this->totalCost = $totalCost;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, OrderItem>
      */
@@ -141,22 +159,22 @@ class Order
         return $this->orderItems;
     }
 
-    public function addOrderItem(OrderItem $orderItem): self
+    public function addOrderItem(OrderItem $orderItem): static
     {
         if (!$this->orderItems->contains($orderItem)) {
-            $this->orderItems[] = $orderItem;
-            $orderItem->setProduct($this);
+            $this->orderItems->add($orderItem);
+            $orderItem->setOrder($this);
         }
 
         return $this;
     }
 
-    public function removeOrderItem(OrderItem $orderItem): self
+    public function removeOrderItem(OrderItem $orderItem): static
     {
         if ($this->orderItems->removeElement($orderItem)) {
             // set the owning side to null (unless already changed)
-            if ($orderItem->getProduct() === $this) {
-                $orderItem->setProduct(null);
+            if ($orderItem->getOrder() === $this) {
+                $orderItem->setOrder(null);
             }
         }
 
