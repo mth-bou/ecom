@@ -10,7 +10,7 @@
             <div class="row">
                 {% for product in products %}
                     <div class="col-md-4">
-                        <div class="card bg-transparent border-0">
+                        <div class="card card-product bg-transparent border-0">
                             <img src="{{ asset('uploads/images/' ~ product.image|default('default-product-image.png')) }}"
                                  alt="{{ product.name }}"
                                  class="card-img-top product-image rounded-3 bg-light"
@@ -21,9 +21,7 @@
                                 {% set description = product.description|length > maxLength ? product.description|slice(0, maxLength) ~ '...' : product.description %}
                                 <p class="card-text">{{ description }}</p>
                                 <p><strong>Prix : {{ product.price }}€</strong></p>
-                                <a href="{{ path('order_index', { id: product.id }) }}" class="btn btn-primary">Ajouter
-                                    au
-                                    panier</a>
+                                <a href="{{ path('product_show', { id: product.id }) }}" class="btn btn-dark">Voir plus</a>
                             </div>
                         </div>
                     </div>
